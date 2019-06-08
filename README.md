@@ -1,5 +1,5 @@
 # lookart-ip
-Powerfull python module to lookup IP's.
+Powerfull python module to lookup IPs.
 
 It can provide:
 ```
