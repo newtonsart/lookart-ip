@@ -1,48 +1,17 @@
-import requests, json
+import requests, json, ipaddress
 
-def city(ip):
-	return requests.get("https://ipapi.co/" + ip + "/city").text
+info = ['city', 'region', 'region_code', 'country', 'country_name', 'continent_code', 'in_eu', 'postal', 'latitude', 'longitude', 'latlong', 'timezone', 'utc_offset', 'country_calling_code', 'currency', 'languages', 'asn', 'org', 'all']
 
-def postal(ip):
-	return requests.get("https://ipapi.co/" + ip + "/postal").text
-	
-def isprov(ip):
-	return requests.get("https://ipapi.co/" + ip + "/org").text
+class UnknownVariableToLookup(Exception):
+	pass
 
-def latlong(ip):
-	return requests.get("https://ipapi.co/" + ip + "/latlong").text
-
-def country(ip):
-	return requests.get("https://ipapi.co/" + ip + "/country").text
-
-def region(ip):
-	return requests.get("https://ipapi.co/" + ip + "/region").text
-
-def currency(ip):
-	return requests.get("https://ipapi.co/" + ip + "/currency").text
-
-def region_code(ip):
-	return requests.get("https://ipapi.co/" + ip + "/region_code").text
-
-def country_name(ip):
-	return requests.get("https://ipapi.co/" + ip + "/country_name").text
-
-def continent_code(ip):
-	return requests.get("https://ipapi.co/" + ip + "/continent_code").text
-
-def latitude(ip):
-	return requests.get("https://ipapi.co/" + ip + "/latitude").text
-
-def longitude(ip):
-	return requests.get("https://ipapi.co/" + ip + "/longitude").text
-
-def timezone(ip):
-	return requests.get("https://ipapi.co/" + ip + "/timezone").text
-
-def country_calling_code(ip):
-	return requests.get("https://ipapi.co/" + ip + "/country_calling_code").text
-
-def all(ip):
-	request = requests.get("https://ipapi.co/" + ip + "/json").text
-	all_dictionary = json.loads(request)
-	return all_dictionary
+def lookup(ip, info_to_lookup):
+	ipaddress.ip_address(ip)
+	if info_to_lookup in info:
+		if info_to_lookup == "all":
+			request = requests.get("https://ipapi.co/{}/json".format(ip))
+			return request.json()
+		else:
+			request = requests.get("https://ipapi.co/{}/{}".format(ip, info_to_lookup)).text
+			return request
+	else: raise UnknownVariableToLookup("Argument {} is not a valid argument.\nValid arguments: {}.".format(info_to_lookup, ", ".join(info)))
